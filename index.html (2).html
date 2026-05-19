@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FG Financieros Gimenez – Acuerdo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+:root{
+  --navy:#0a1628;--blue:#1a3a6b;--gold:#c8973a;--gold-light:#e8b84b;
+  --gray:#8a9bb0;--light:#f4f6fa;--white:#fff;--border:#dde3ee;
+  --text:#1e2a3a;--danger:#c0392b;--green:#1a6b3c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',sans-serif;background:#e8ecf4;color:var(--text);min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:38px;height:38px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy)}
+.brand-text .name{font-size:14px;font-weight:700;color:#fff;letter-spacing:.4px}
+.brand-text .sub{font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.mode-badge{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.mode-empresa{background:rgba(200,151,58,.2);color:var(--gold);border:1px solid rgba(200,151,58,.4)}
+.mode-cliente{background:rgba(26,107,60,.25);color:#4fd98e;border:1px solid rgba(26,107,60,.4)}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:28px 16px 60px}
+
+/* PANEL */
+.panel{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(10,22,40,.10);overflow:hidden;margin-bottom:22px}
+.panel-header{background:var(--blue);padding:16px 24px;display:flex;align-items:center;gap:10px}
+.panel-icon{font-size:18px}
+.panel-title{font-family:'Playfair Display',serif;font-size:16px;color:#fff;font-weight:600}
+.panel-body{padding:24px}
+
+/* FORM */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:580px){.fg,.fg3{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--blue)}
+.field input,.field select{border:1.5px solid var(--border);border-radius:8px;padding:10px 13px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--light);transition:border-color .2s,box-shadow .2s;outline:none}
+.field input:focus,.field select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(200,151,58,.15)}
+.field input.ro{background:#f3f4f8;color:var(--gray);cursor:not-allowed}
+
+/* NOTICE */
+.notice{background:#fffbf0;border:1px solid #f0d580;border-radius:8px;padding:11px 15px;font-size:12.5px;color:#6b5000;margin-bottom:18px;display:flex;gap:9px;align-items:flex-start}
+.notice-green{background:#f0faf4;border-color:#7dd4a8;color:#145a32}
+
+/* LINK BOX */
+.link-box{background:var(--navy);border-radius:12px;padding:20px 22px;margin-top:4px}
+.link-box label{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:8px}
+.link-row{display:flex;gap:10px;align-items:center}
+.link-input{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:11px 14px;color:#c8d4e8;font-size:12px;font-family:monospace;outline:none;cursor:text}
+.btn-copy{background:var(--gold);color:var(--navy);border:none;border-radius:8px;padding:11px 18px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;transition:background .2s}
+.btn-copy:hover{background:var(--gold-light)}
+.btn-wa{background:#25D366;color:#fff;border:none;border-radius:8px;padding:11px 18px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-wa:hover{background:#1ebe5a}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.btn{padding:11px 26px;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px}
+.btn-primary{background:var(--gold);color:var(--navy)}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 4px 14px rgba(200,151,58,.4)}
+.btn-secondary{background:var(--light);color:var(--blue);border:1.5px solid var(--border)}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover{background:#23884d;transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,107,60,.35)}
+.btn-danger{background:#fdf2f2;color:var(--danger);border:1.5px solid #f5c6c6;font-size:12px;padding:5px 12px}
+
+/* DOC PREVIEW */
+.doc-preview{background:#fff;border:1px solid var(--border);border-radius:12px;padding:32px 36px;font-size:12.5px;line-height:1.75;color:var(--text)}
+.doc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--gold)}
+.doc-logo .fg-big{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--navy)}
+.doc-logo .rest{font-size:13px;color:var(--blue);display:block}
+.doc-logo .sub2{font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase}
+.doc-date{text-align:right;font-size:11px;color:var(--gray);line-height:1.6}
+.doc-title{text-align:center;font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.doc-subtitle{text-align:center;font-size:10px;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px}
+.doc-divider{height:1px;background:var(--border);margin:14px 0}
+.doc-body p{margin-bottom:10px;text-align:justify}
+.doc-body strong{color:var(--navy)}
+.data-box{background:var(--light);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 16px;margin:12px 0;display:grid;grid-template-columns:1fr 1fr;gap:5px 18px}
+.data-row{display:flex;gap:7px;font-size:12px}
+.data-label{font-weight:700;color:var(--blue);white-space:nowrap}
+.sig-block{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:500px){.sig-block{grid-template-columns:1fr}}
+.sig-box{border:1.5px dashed var(--border);border-radius:10px;padding:12px;text-align:center}
+.sig-label{font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--gray);margin-bottom:7px}
+.sig-box canvas{border-radius:6px;cursor:crosshair;background:#fafbfc;touch-action:none;max-width:100%}
+.sig-name{font-size:10px;color:var(--gray);margin-top:7px}
+.sig-owner{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#f4f6fa,#eef0f8)}
+.sig-owner-text{font-family:'Playfair Display',serif;font-size:20px;color:var(--blue);border-bottom:1.5px solid var(--navy);padding-bottom:4px;margin-bottom:7px}
+
+/* CLIENT MODE */
+.client-hero{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:16px;padding:28px;text-align:center;margin-bottom:22px;color:#fff}
+.client-hero h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);margin-bottom:8px}
+.client-hero p{font-size:13px;color:#c8d4e8;max-width:420px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-logo">FG</div>
+    <div class="brand-text">
+      <div class="name">FG Financieros Gimenez</div>
+      <div class="sub">Créditos Personales</div>
+    </div>
+  </div>
+  <div id="mode-badge" class="mode-badge mode-empresa">Panel Empresa</div>
+</div>
+
+<div class="main" id="app">
+  <!-- contenido dinámico -->
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+// UTILIDADES
+// ─────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const getVal = id => ($(id) ? $(id).value.trim() : '');
+const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+function todayStr(){
+  const d = new Date();
+  return `${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// DETECCIÓN DE MODO: si la URL tiene ?datos=... → modo cliente
+// ─────────────────────────────────────────────────────────────────
+function getURLData(){
+  try{
+    const p = new URLSearchParams(window.location.search);
+    const raw = p.get('datos');
+    if(!raw) return null;
+    return JSON.parse(atob(raw));
+  }catch(e){ return null; }
+}
+
+const urlData = getURLData();
+
+if(urlData){
+  // ══════════════════════════════════════════════════════════════
+  // MODO CLIENTE — solo ve el documento y firma
+  // ══════════════════════════════════════════════════════════════
+  $('mode-badge').className = 'mode-badge mode-cliente';
+  $('mode-badge').textContent = 'Vista Cliente';
+
+  renderClientMode(urlData);
+} else {
+  // ══════════════════════════════════════════════════════════════
+  // MODO EMPRESA — carga datos y genera link
+  // ══════════════════════════════════════════════════════════════
+  renderEmpresaForm();
+}
+
+// ─────────────────────────────────────────────────────────────────
+// MODO EMPRESA
+// ─────────────────────────────────────────────────────────────────
+function renderEmpresaForm(){
+  $('app').innerHTML = `
+  <div class="panel">
+    <div class="panel-header"><span class="panel-icon">👤</span><span class="panel-title">Datos del Cliente</span></div>
+    <div class="panel-body">
+      <div class="fg">
+        <div class="field"><label>Nombre y Apellido *</label><input type="text" id="cli-nombre" placeholder="García Juan Carlos"/></div>
+        <div class="field"><label>DNI *</label><input type="text" id="cli-dni" placeholder="30123456"/></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><span class="panel-icon">💰</span><span class="panel-title">Datos del Acuerdo</span></div>
+    <div class="panel-body">
+      <div class="fg3">
+        <div class="field"><label>Deuda Total ($) *</label><input type="text" id="deuda-total" placeholder="1.633.564,81"/></div>
+        <div class="field"><label>Monto Acordado ($) *</label><input type="text" id="deuda-acordada" placeholder="517.512,36"/></div>
+        <div class="field"><label>Honorarios ($) *</label><input type="text" id="honorarios" placeholder="100.835,76"/></div>
+      </div>
+      <div class="fg3" style="margin-top:16px">
+        <div class="field"><label>Cantidad de Cuotas *</label><input type="number" id="cant-cuotas" placeholder="6" min="1" max="60"/></div>
+        <div class="field"><label>Día de Pago *</label><input type="number" id="dia-pago" placeholder="8" min="1" max="31"/></div>
+        <div class="field"><label>Mes de Inicio *</label>
+          <select id="mes-inicio">
+            <option value="">— Seleccionar —</option>
+            <option>Enero</option><option>Febrero</option><option>Marzo</option><option>Abril</option>
+            <option selected>Mayo</option><option>Junio</option><option>Julio</option><option>Agosto</option>
+            <option>Septiembre</option><option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header"><span class="panel-icon">🏦</span><span class="panel-title">Cuenta para el Pago (fija)</span></div>
+    <div class="panel-body">
+      <div class="fg3">
+        <div class="field"><label>Titular</label><input class="ro" value="Esteban Sebastian Gimenez" readonly/></div>
+        <div class="field"><label>CUIT/CUIL</label><input class="ro" value="20-44585749-2" readonly/></div>
+        <div class="field"><label>Alias</label><input class="ro" value="esteban.revancha.bru" readonly/></div>
+      </div>
+      <div class="fg" style="margin-top:14px">
+        <div class="field"><label>CBU</label><input class="ro" value="1430001713025524880011" readonly/></div>
+        <div class="field"><label>Nro. de Cuenta</label><input class="ro" value="1302552488001" readonly/></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="link-section" style="display:none">
+    <div class="panel">
+      <div class="panel-header"><span class="panel-icon">🔗</span><span class="panel-title">Link para el Cliente</span></div>
+      <div class="panel-body">
+        <div class="notice notice-green">
+          <span>✅</span>
+          <span>El link ya tiene todos los datos cargados. Copialo y mandáselo al cliente por WhatsApp. Él solo tiene que abrirlo, leer, firmar y bajarse el PDF.</span>
+        </div>
+        <div class="link-box">
+          <label>Link del acuerdo para el cliente</label>
+          <div class="link-row">
+            <input class="link-input" id="link-output" readonly/>
+            <button class="btn-copy" onclick="copyLink()">📋 Copiar</button>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+            <a id="wa-btn" class="btn-wa" href="#" target="_blank">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Enviar por WhatsApp
+            </a>
+            <button class="btn btn-secondary" onclick="generarLink()" style="margin-left:auto">🔄 Regenerar link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="generarLink()">🔗 Generar Link para el Cliente →</button>
+  </div>
+  `;
+}
+
+function generarLink(){
+  const nombre  = getVal('cli-nombre');
+  const dni     = getVal('cli-dni');
+  const total   = getVal('deuda-total');
+  const acord   = getVal('deuda-acordada');
+  const honor   = getVal('honorarios');
+  const cuotas  = getVal('cant-cuotas');
+  const dia     = getVal('dia-pago');
+  const mes     = getVal('mes-inicio');
+
+  if(!nombre||!dni||!total||!acord||!honor||!cuotas||!dia||!mes){
+    alert('Completá todos los campos obligatorios (*)');
+    return;
+  }
+
+  const datos = { nombre, dni, total, acord, honor, cuotas, dia, mes };
+  const encoded = btoa(JSON.stringify(datos));
+  const url = `${location.origin}${location.pathname}?datos=${encoded}`;
+
+  $('link-output').value = url;
+  $('wa-btn').href = `https://wa.me/?text=${encodeURIComponent('Hola! Te mando el acuerdo de conformidad para que lo leas, firmes y me mandes el PDF. Abrí este link: ' + url)}`;
+  $('link-section').style.display = 'block';
+  $('link-section').scrollIntoView({ behavior:'smooth' });
+}
+
+function copyLink(){
+  const val = $('link-output').value;
+  navigator.clipboard.writeText(val).then(()=>{
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✅ Copiado!';
+    setTimeout(()=>{ btn.textContent = '📋 Copiar'; }, 2000);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────
+// MODO CLIENTE
+// ─────────────────────────────────────────────────────────────────
+function renderClientMode(d){
+  $('app').innerHTML = `
+  <div class="client-hero">
+    <h2>Acuerdo de Conformidad</h2>
+    <p>Leé el documento con atención. Cuando estés de acuerdo, firmá en el recuadro con el dedo o el mouse y descargá el PDF.</p>
+  </div>
+
+  <div class="panel">
+    <div class="panel-body">
+      <div class="doc-preview">
+
+        <div class="doc-header">
+          <div class="doc-logo">
+            <span class="fg-big">FG</span>
+            <span class="rest">Financieros Gimenez</span>
+            <span class="sub2">Créditos Personales</span>
+          </div>
+          <div class="doc-date">Ciudad Autónoma de Buenos Aires<br/><strong>${todayStr()}</strong></div>
+        </div>
+
+        <div class="doc-title">ACUERDO DE CONFORMIDAD</div>
+        <div class="doc-subtitle">Gestión de Obligaciones — Crédito Personal</div>
+        <div class="doc-divider"></div>
+
+        <div class="doc-body">
+          <p>En relación a las obligaciones contraídas registradas a nombre de <strong>${d.nombre.toUpperCase()}</strong>, DNI <strong>${d.dni}</strong>, ante <strong>FG Financieros Gimenez</strong>.</p>
+
+          <p>Al respecto se deja constancia que registra una deuda de <strong>$${d.total}</strong>. De modo excepcional y a fin de que sean cumplidas las obligaciones asumidas originalmente, le hemos brindado la posibilidad de cancelar su deuda por un total de <strong>$${d.acord}</strong> en <strong>${d.cuotas} pagos</strong>, todos los <strong>${d.dia} de ${d.mes}</strong> y los mismos días de los meses subsiguientes.</p>
+
+          <div class="data-box">
+            <div class="data-row"><span class="data-label">Titular:</span><span>Esteban Sebastian Gimenez</span></div>
+            <div class="data-row"><span class="data-label">CUIT/CUIL:</span><span>20-44585749-2</span></div>
+            <div class="data-row"><span class="data-label">CBU:</span><span>1430001713025524880011</span></div>
+            <div class="data-row"><span class="data-label">Alias:</span><span>esteban.revancha.bru</span></div>
+            <div class="data-row"><span class="data-label">Nro. Cuenta:</span><span>1302552488001</span></div>
+          </div>
+
+          <p>Los honorarios de la Agencia ascienden a la suma de <strong>$${d.honor}</strong> y deberán depositarse en la misma cuenta indicada. Ante el incumplimiento de los pagos mencionados, facultará a la Entidad a exigir el saldo total adeudado. La presente no implica novación de las obligaciones anteriormente descritas.</p>
+
+          <p>Se deja expresamente aclarado que cualquier eventual modificación en la situación crediticia dependerá del cumplimiento efectivo e íntegro de los compromisos asumidos. En este marco y en la medida en que se verifique el cumplimiento en tiempo y forma, podrá solicitar a <strong>FG Financieros Gimenez</strong> el Certificado de Libre Deuda.</p>
+        </div>
+
+        <div class="sig-block">
+          <div class="sig-box">
+            <div class="sig-label">✍️ Tu firma — ${d.nombre}</div>
+            <canvas id="sig-canvas" width="260" height="90"></canvas>
+            <div class="sig-name">DNI: ${d.dni}</div>
+            <div style="margin-top:7px">
+              <button class="btn btn-danger" onclick="clearSig()">🗑️ Borrar y volver a firmar</button>
+            </div>
+          </div>
+          <div class="sig-box sig-owner">
+            <div class="sig-label">Firma FG Financieros Gimenez</div>
+            <div class="sig-owner-text">E. S. Gimenez</div>
+            <div class="sig-name">FG Financieros Gimenez</div>
+            <div class="sig-name">Créditos Personales</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-success" onclick="generatePDF()">⬇️ Firmar y descargar PDF</button>
+  </div>
+  `;
+
+  initCanvas();
+}
+
+// ─────────────────────────────────────────────────────────────────
+// CANVAS FIRMA
+// ─────────────────────────────────────────────────────────────────
+let drawing = false, lastX = 0, lastY = 0;
+
+function initCanvas(){
+  const canvas = $('sig-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#1a3a6b';
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  function pos(e){
+    const r = canvas.getBoundingClientRect();
+    const sx = canvas.width/r.width, sy = canvas.height/r.height;
+    if(e.touches) return { x:(e.touches[0].clientX-r.left)*sx, y:(e.touches[0].clientY-r.top)*sy };
+    return { x:(e.clientX-r.left)*sx, y:(e.clientY-r.top)*sy };
+  }
+
+  canvas.onmousedown  = e => { drawing=true; const p=pos(e); lastX=p.x; lastY=p.y; };
+  canvas.onmousemove  = e => { if(!drawing) return; const p=pos(e); draw(ctx,p); };
+  canvas.onmouseup    = () => drawing=false;
+  canvas.onmouseleave = () => drawing=false;
+  canvas.ontouchstart = e => { e.preventDefault(); drawing=true; const p=pos(e); lastX=p.x; lastY=p.y; };
+  canvas.ontouchmove  = e => { e.preventDefault(); if(!drawing) return; const p=pos(e); draw(ctx,p); };
+  canvas.ontouchend   = () => drawing=false;
+}
+
+function draw(ctx, p){
+  ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+  lastX=p.x; lastY=p.y;
+}
+
+function clearSig(){
+  const c = $('sig-canvas');
+  c.getContext('2d').clearRect(0,0,c.width,c.height);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// GENERAR PDF
+// ─────────────────────────────────────────────────────────────────
+function generatePDF(){
+  const d = urlData || {
+    nombre: getVal('cli-nombre'), dni: getVal('cli-dni'),
+    total: getVal('deuda-total'), acord: getVal('deuda-acordada'),
+    honor: getVal('honorarios'), cuotas: getVal('cant-cuotas'),
+    dia: getVal('dia-pago'), mes: getVal('mes-inicio')
+  };
+
+  const sigCanvas = $('sig-canvas');
+  const sigData = sigCanvas.getContext('2d').getImageData(0,0,sigCanvas.width,sigCanvas.height).data;
+  if(!sigData.some(v=>v!==0)){
+    alert('Por favor firmá el documento antes de descargarlo.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W=210, H=297, ml=20, mr=20, cw=170;
+  let y=14;
+
+  // header bar
+  doc.setFillColor(10,22,40); doc.rect(0,0,W,14,'F');
+  doc.setTextColor(200,151,58); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('FG FINANCIEROS GIMENEZ  ·  Créditos Personales', ml, 9.5);
+  doc.setTextColor(180,180,180); doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+  doc.text(`Ciudad Autónoma de Buenos Aires, ${todayStr()}`, W-mr, 9.5, {align:'right'});
+
+  y = 22;
+  doc.setTextColor(10,22,40); doc.setFontSize(17); doc.setFont('helvetica','bold');
+  doc.text('ACUERDO DE CONFORMIDAD', W/2, y, {align:'center'});
+  y+=6;
+  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(160,120,40);
+  doc.text('GESTIÓN DE OBLIGACIONES  —  CRÉDITO PERSONAL', W/2, y, {align:'center'});
+  y+=3;
+  doc.setDrawColor(200,151,58); doc.setLineWidth(0.5);
+  doc.line(ml, y+2, W-mr, y+2);
+  y+=8;
+
+  // cliente box
+  doc.setFillColor(235,240,250); doc.roundedRect(ml,y,cw,13,2,2,'F');
+  doc.setDrawColor(26,58,107); doc.setLineWidth(0.4); doc.roundedRect(ml,y,cw,13,2,2,'S');
+  doc.setTextColor(26,58,107); doc.setFontSize(7); doc.setFont('helvetica','bold');
+  doc.text('DATOS DEL CLIENTE', ml+4, y+4.5);
+  doc.setTextColor(10,22,40); doc.setFontSize(10); doc.setFont('helvetica','bold');
+  doc.text(d.nombre.toUpperCase(), ml+4, y+10.5);
+  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80);
+  doc.text(`DNI: ${d.dni}`, W-mr-4, y+10.5, {align:'right'});
+  y+=18;
+
+  doc.setFontSize(9.5); doc.setFont('helvetica','normal'); doc.setTextColor(30,42,58);
+  function wp(txt, cy){ const lines=doc.splitTextToSize(txt,cw); lines.forEach(l=>{ doc.text(l,ml,cy); cy+=5; }); return cy+2; }
+
+  y = wp(`En relación a las obligaciones contraídas registradas a nombre de ${d.nombre.toUpperCase()}, DNI ${d.dni}, ante FG Financieros Gimenez.`, y);
+  y = wp(`Al respecto se deja constancia que registra una deuda de $${d.total}. De modo excepcional y a fin de que sean cumplidas las obligaciones asumidas originalmente, le hemos brindado la posibilidad de cancelar su deuda por un total de $${d.acord} en ${d.cuotas} pagos, todos los ${d.dia} de ${d.mes} y los mismos días de los meses subsiguientes.`, y);
+
+  // cuenta box
+  doc.setFillColor(244,246,250);
+  doc.setDrawColor(200,151,58); doc.setLineWidth(1.2); doc.line(ml,y,ml,y+30);
+  doc.setLineWidth(0.3); doc.setDrawColor(220,225,235); doc.roundedRect(ml+2,y,cw-2,30,2,2,'F');
+  doc.setTextColor(26,58,107); doc.setFontSize(7); doc.setFont('helvetica','bold');
+  doc.text('DATOS DE LA CUENTA PARA EL PAGO', ml+6, y+5);
+  const cols=[['Titular:','Esteban Sebastian Gimenez'],['CUIT/CUIL:','20-44585749-2'],['CBU:','1430001713025524880011'],['Alias:','esteban.revancha.bru'],['Nro. Cuenta:','1302552488001']];
+  const half=Math.ceil(cols.length/2);
+  cols.forEach((r,i)=>{ const col=i<half?0:1; const ri=i<half?i:i-half; const cx=ml+6+col*85; const cy=y+10+ri*6; doc.setFont('helvetica','bold'); doc.setTextColor(26,58,107); doc.setFontSize(8); doc.text(r[0],cx,cy); doc.setFont('helvetica','normal'); doc.setTextColor(30,42,58); doc.text(r[1],cx+22,cy); });
+  y+=34;
+
+  y = wp(`Los honorarios de la Agencia ascienden a la suma de $${d.honor} y deberán depositarse en la misma cuenta indicada. Ante el incumplimiento de los pagos mencionados, facultará a la Entidad a exigir el saldo total adeudado. La presente no implica novación de las obligaciones anteriormente descritas.`, y);
+  y = wp(`Se deja expresamente aclarado que cualquier eventual modificación en la situación crediticia dependerá del cumplimiento efectivo e íntegro de los compromisos asumidos. En este marco y en la medida en que se verifique el cumplimiento en tiempo y forma, podrá solicitar a FG Financieros Gimenez el Certificado de Libre Deuda.`, y);
+  y+=4;
+
+  // firmas
+  const sigW=(cw-8)/2, sigH=36, sigY=y;
+  doc.setFillColor(250,251,253); doc.setDrawColor(180,190,210); doc.setLineWidth(0.4);
+  doc.roundedRect(ml,sigY,sigW,sigH,2,2,'FD');
+  doc.setTextColor(140,155,176); doc.setFontSize(7); doc.setFont('helvetica','bold');
+  doc.text('FIRMA, ACLARACIÓN Y FECHA — CLIENTE', ml+sigW/2, sigY+4.5, {align:'center'});
+  doc.addImage(sigCanvas.toDataURL('image/png'),'PNG',ml+4,sigY+6,sigW-8,sigH-16);
+  doc.setDrawColor(30,42,58); doc.setLineWidth(0.3); doc.line(ml+4,sigY+sigH-8,ml+sigW-4,sigY+sigH-8);
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(30,42,58);
+  doc.text(d.nombre, ml+sigW/2, sigY+sigH-4, {align:'center'});
+  doc.setFontSize(7); doc.setTextColor(140,155,176);
+  doc.text(`DNI: ${d.dni}`, ml+sigW/2, sigY+sigH-0.5, {align:'center'});
+
+  const cx2=ml+sigW+8;
+  doc.setFillColor(245,248,255); doc.setDrawColor(26,58,107); doc.setLineWidth(0.4);
+  doc.roundedRect(cx2,sigY,sigW,sigH,2,2,'FD');
+  doc.setTextColor(140,155,176); doc.setFontSize(7); doc.setFont('helvetica','bold');
+  doc.text('SELLO / FIRMA — FG FINANCIEROS GIMENEZ', cx2+sigW/2, sigY+4.5, {align:'center'});
+  doc.setFontSize(16); doc.setFont('helvetica','bolditalic'); doc.setTextColor(26,58,107);
+  doc.text('E. S. Gimenez', cx2+sigW/2, sigY+21, {align:'center'});
+  doc.setDrawColor(26,58,107); doc.setLineWidth(0.4); doc.line(cx2+6,sigY+24,cx2+sigW-6,sigY+24);
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(30,42,58);
+  doc.text('FG Financieros Gimenez', cx2+sigW/2, sigY+29, {align:'center'});
+
+  // footer
+  doc.setFillColor(10,22,40); doc.rect(0,H-10,W,10,'F');
+  doc.setTextColor(150,160,180); doc.setFontSize(7); doc.setFont('helvetica','normal');
+  doc.text('FG Financieros Gimenez  ·  Créditos Personales  ·  Ciudad Autónoma de Buenos Aires', W/2, H-5.5, {align:'center'});
+  doc.setTextColor(100,110,130);
+  doc.text('Este documento tiene carácter de acuerdo de pago voluntario. No implica novación de la deuda original.', W/2, H-2, {align:'center'});
+
+  doc.save(`Acuerdo_${d.nombre.replace(/\s+/g,'_')}_DNI${d.dni}.pdf`);
+}
+</script>
+</body>
+</html>
